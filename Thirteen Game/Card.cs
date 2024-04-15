@@ -19,5 +19,57 @@ namespace Thirteen_Game
             this.number = number;
             this.suit = suit;
         }
+
+        public static string numberName(int num)
+        {
+            // 0 - 12
+            // Ordered by rank, where 2 is the highest
+            // and 3 is the lowest ranking card number
+            switch (num)
+            {
+                case 8:
+                    return "Jack";
+                case 9:
+                    return "Queen";
+                case 10:
+                    return "King";
+                case 11:
+                    return "Ace";
+                case 12:
+                    return "2";
+                default:
+                    return (num + 3).ToString();
+            }
+        }
+
+        public string numberName()
+        {
+            return numberName(this.number);
+        }
+
+        public static string suitName(int suit)
+        {
+            switch (suit)
+            {
+                case 0:
+                    return "Spades";
+                case 1:
+                    return "Clubs";
+                case 2:
+                    return "Diamonds";
+                default:
+                    return "Hearts";
+            }
+        }
+
+        public string suitName()
+        {
+            return suitName(this.suit);
+        }
+
+        public override string ToString()
+        {
+            return numberName() + " of " + suitName();
+        }
     }
 }

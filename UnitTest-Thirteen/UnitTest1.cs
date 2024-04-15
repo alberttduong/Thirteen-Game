@@ -6,6 +6,25 @@ using Thirteen_Game;
 namespace UnitTest_Thirteen
 {
     [TestClass]
+    public class UnitTest_Card
+    {
+        Card card = new Card(0, 0);
+
+        [TestMethod]
+        public void Test_CardToString()
+        {
+            Assert.AreEqual(card.ToString(), "3 of Spades");
+        }
+
+        [TestMethod]
+        public void Test_NumberNameIsCorrectInteger()
+        {
+            Assert.AreEqual(Card.numberName(7), "10");
+            Assert.AreEqual(Card.numberName(8), "Jack");
+        }
+    }
+
+    [TestClass]
     public class UnitTest_Deck
     {
         Deck deck = new Deck();
