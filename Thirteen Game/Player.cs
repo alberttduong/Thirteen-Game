@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Thirteen_Game
 {
-    internal class Thirteen
+    public class Player
     {
-        static void Main(string[] args)
+        public int id { get; set; }
+        public Player(int id)
         {
+            this.id = id;
         }
     }
 }
