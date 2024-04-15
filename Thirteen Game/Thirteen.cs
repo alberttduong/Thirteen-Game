@@ -6,20 +6,15 @@ using System.Threading.Tasks;
 
 namespace Thirteen_Game
 {
-    public enum Suits
-    {
-        Spades,
-        Clubs,
-        Diamonds,
-        Hearts
-    }
-
     public class Card
     {
-        public int number { get; }
-        public string suit { get; }
+        public const int NumOfSuits = 4;
+        public const int NumOfNumbers = 13;
 
-        public Card(int number, string suit)
+        public int number { get; }
+        public int suit { get; }
+
+        public Card(int number, int suit)
         {
             this.number = number;
             this.suit = suit;
@@ -29,6 +24,10 @@ namespace Thirteen_Game
     public class Deck
     {
         private Card[] _cards = new Card[52];
+
+        private void initializeCards()
+        {
+        }
 
         public Deck()
         {
@@ -46,11 +45,10 @@ namespace Thirteen_Game
 
     }
 
-    internal class Program
+    internal class Thirteen
     {
         static void Main(string[] args)
         {
-
         }
     }
 }
