@@ -36,15 +36,63 @@ namespace Thirteen_Game
             this.size = size;
             this.lastCard = lastCard;
         }
-
-        public bool isNotEmpty()
+        public override int GetHashCode()
         {
-            return this.size > 0;
+            return 0;
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (GetType() != obj.GetType())
+                return false;
+            
+            Sequence other = (Sequence)obj;
+
+            return other.size == this.size
+                && other.lastCard == this.lastCard
+                && other.type == this.type;
+        }
+
+        public static bool operator ==(Sequence a, Sequence b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Sequence a, Sequence b)
+        {
+            return !a.Equals(b);
         }
 
         public bool isEmpty()
         {
             return this.size == 0;
+        }
+
+        // Adds a card to this Sequence
+        // or makes this Sequence empty
+        // if the card can't be included
+        // in the Sequence.
+        //
+        // PRECONDITION: This sequenceType
+        // is Single.
+        public void addCardToSingle(Card card)
+        {
+            if (card.number == this.lastCard.number)
+            {
+                update(sequenceType.Flat, 2, card);
+            }
+            else if (card.number == this.lastCard.number + 1)
+            {
+                update(sequenceType.Series, 2, card);
+
+            }
+            else
+            {
+                update_to_empty();
+            }
         }
 
         // Adding a card to this Sequence, when valid,
@@ -57,23 +105,14 @@ namespace Thirteen_Game
         // added
         public void addCard(Card card)
         {
-            if (isNotEmpty())
+            if (isEmpty())
+            {
+                update(sequenceType.Single, 1, card);
+            } else
             {
                 if (this.type == sequenceType.Single)
                 {
-                    if (card.number == this.lastCard.number)
-                    {
-                        update(sequenceType.Flat, 2, card);
-                    }
-                    else if (card.number == this.lastCard.number + 1)
-                    {
-                        update(sequenceType.Series, 2, card);
-
-                    }
-                    else
-                    {
-                        update_to_empty();
-                    }
+                    addCardToSingle(card);
                 }
                 else if (this.type == sequenceType.Flat && card.number == this.lastCard.number)
                 {
@@ -88,9 +127,6 @@ namespace Thirteen_Game
                 {
                     update_to_empty();
                 }
-            } else
-            {
-                update(sequenceType.Single, 1, card);
             }
         }
 
@@ -110,12 +146,11 @@ namespace Thirteen_Game
             }
             return newSeq;
         }
-
-        public enum sequenceType
-        {
-            Single,
-            Flat,
-            Series
-        }
+    }
+    public enum sequenceType
+    {
+        Single,
+        Flat,
+        Series
     }
 }

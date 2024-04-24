@@ -52,4 +52,25 @@ namespace UnitTest_Thirteen
             }
         }
     }
+
+    [TestClass]
+    public class UnitTest_Sequence
+    {
+        [TestMethod]
+        public void Test_SequenceIsEmptyUntilAddingACard()
+        {
+            Sequence seq = new Sequence();
+            Assert.IsTrue(seq.isEmpty());
+            seq.addCard(new Card(0, 0));
+        }
+
+        [TestMethod]
+        public void Test_AddingACardToAnEmptySequence()
+        {
+            Sequence seq = new Sequence();
+            Card lastCard = new Card(1, 2);
+            seq.addCard(lastCard);
+            Assert.AreEqual(seq, new Sequence(sequenceType.Single, 1, lastCard));
+        }
+    }
 }
