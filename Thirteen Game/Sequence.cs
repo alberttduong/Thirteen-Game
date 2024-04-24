@@ -17,17 +17,12 @@ namespace Thirteen_Game
 
         public Sequence()
         {
-            this.size = 0;
+            update_to_empty();
         }
 
         public Sequence(sequenceType type, int size, Card lastCard)
         {
             update(type, size, lastCard);
-        }
-
-        public void update_to_empty()
-        {
-            this.size = 0;
         }
 
         public void update(sequenceType type, int size, Card lastCard)
@@ -36,6 +31,12 @@ namespace Thirteen_Game
             this.size = size;
             this.lastCard = lastCard;
         }
+
+        public void update_to_empty()
+        {
+            update(sequenceType.Null, 0, new Card(0, 0));
+        }
+
         public override int GetHashCode()
         {
             return 0;
@@ -54,6 +55,15 @@ namespace Thirteen_Game
             return other.size == this.size
                 && other.lastCard == this.lastCard
                 && other.type == this.type;
+        }
+
+        public override string ToString()
+        {
+            if (isEmpty())
+            {
+                return "Empty sequence";
+            }
+            return $"Type: {this.type}, Size: {this.size}, Last Card: {this.lastCard.ToString()}";
         }
 
         public static bool operator ==(Sequence a, Sequence b)
@@ -151,6 +161,7 @@ namespace Thirteen_Game
     {
         Single,
         Flat,
-        Series
+        Series,
+        Null
     }
 }
