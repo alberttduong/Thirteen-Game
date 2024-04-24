@@ -20,6 +20,35 @@ namespace Thirteen_Game
             this.suit = suit;
         }
 
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (GetType() != obj.GetType())
+                return false;
+
+            Card other = (Card)obj;
+
+            return other.number == this.number
+                && other.suit == this.suit;
+        }
+
+        public static bool operator ==(Card a, Card b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Card a, Card b)
+        {
+            return !a.Equals(b);
+        }
+
         public static string numberName(int num)
         {
             // 0 - 12

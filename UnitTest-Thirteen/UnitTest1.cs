@@ -17,6 +17,17 @@ namespace UnitTest_Thirteen
         }
 
         [TestMethod]
+        public void Test_CardEquality()
+        {
+            Card equalCard = new Card(0, 0);
+            Card unequalCard = new Card(0, 1);
+            Assert.AreEqual(card, card);
+            Assert.AreEqual(card, equalCard);
+            Assert.AreNotEqual(card, unequalCard);
+            Assert.IsTrue(card == equalCard);
+        }
+
+        [TestMethod]
         public void Test_NumberNameIsCorrectInteger()
         {
             Assert.AreEqual(Card.numberName(7), "10");
@@ -65,12 +76,33 @@ namespace UnitTest_Thirteen
         }
 
         [TestMethod]
+        public void Test_SequenceEquality()
+        {
+            Sequence seq1 = new Sequence(sequenceType.Single, 1, new Card(0, 0));
+            Sequence seq2 = new Sequence(sequenceType.Single, 1, new Card(0, 0));
+            Sequence seq3 = new Sequence(sequenceType.Single, 1, new Card(1, 0));
+            Assert.AreEqual(seq1, seq1);
+            Assert.AreEqual(seq1, seq2);
+            Assert.AreNotEqual(seq1, seq3);
+        }
+
+        [TestMethod]
         public void Test_AddingACardToAnEmptySequence()
         {
             Sequence seq = new Sequence();
             Card lastCard = new Card(1, 2);
             seq.addCard(lastCard);
             Assert.AreEqual(seq, new Sequence(sequenceType.Single, 1, lastCard));
+            Assert.AreNotEqual(seq, new Sequence());
+        }
+
+        [TestMethod]
+        public void Test_AddingALesserCardToASingleSequenceFails()
+        {
+            Sequence seq = new Sequence(sequenceType.Single, 1, new Card(1, 1));
+            seq.addCard(new Card(0, 0));
+            Assert.AreEqual(seq, new Sequence());
+            Assert.AreNotEqual(seq, new Sequence(sequenceType.Series, 2, new Card(0, 0)));
         }
     }
 }
