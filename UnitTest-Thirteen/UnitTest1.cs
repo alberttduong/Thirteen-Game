@@ -104,5 +104,59 @@ namespace UnitTest_Thirteen
             Assert.AreEqual(seq, new Sequence());
             Assert.AreNotEqual(seq, new Sequence(sequenceType.Series, 2, new Card(0, 0)));
         }
+
+        [TestMethod]
+        public void Test_AddingAnIncompatibleGreaterCardToASingleFails()
+        {
+            Sequence seq = new Sequence(sequenceType.Single, 1, new Card(1, 1));
+            Card incompatibleCard = new Card(3, 1);
+            seq.addCard(incompatibleCard);
+            Assert.AreEqual(seq, new Sequence());
+        }
+
+        [TestMethod]
+        public void Test_AddingASingleGivesAFlatSequence()
+        {
+            Sequence seq = new Sequence(sequenceType.Single, 1, new Card(1, 1));
+            Card cardWithSameNum = new Card(1, 0); 
+            seq.addCard(cardWithSameNum);
+            Assert.AreEqual(seq, new Sequence(sequenceType.Flat, 2, cardWithSameNum));
+        }
+
+        [TestMethod]
+        public void Test_AddingToASingleGivesASeriesSequence()
+        {
+            Sequence seq = new Sequence(sequenceType.Single, 1, new Card(1, 1));
+            Card cardIncremented = new Card(2, 3);
+            seq.addCard(cardIncremented);
+            Assert.AreEqual(seq, new Sequence(sequenceType.Series, 2, cardIncremented));
+        }
+
+        [TestMethod]
+        public void Test_AddingToAFlatSequence()
+        {
+            const int TEST_CASES = 3;
+
+            Card[] cardsAdded =
+            {
+                new Card(1, 0),
+                new Card(2, 3),
+                new Card(3, 1),
+            };
+
+            Sequence[] expectedSequences = {
+                new Sequence(),
+                new Sequence(sequenceType.Flat, 3, cardsAdded[1]),
+                new Sequence(),
+            };
+
+            Sequence seq = new Sequence();
+            for (int i = 0; i < TEST_CASES; i++)
+            {
+                seq.update(sequenceType.Flat, 2, new Card(2, 1));
+                seq.addCard(cardsAdded[i]);
+                Assert.AreEqual(seq, expectedSequences[i]);
+            }
+        }
     }
 }

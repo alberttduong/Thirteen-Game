@@ -46,6 +46,7 @@
     <Compile Include="Card.cs" />
     <Compile Include="Deck.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Sequence.cs" />
     <Compile Include="Thirteen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
