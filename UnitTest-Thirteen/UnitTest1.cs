@@ -185,5 +185,19 @@ namespace UnitTest_Thirteen
                 Assert.AreEqual(seq, expectedSequences[i]);
             }
         }
+
+        [TestMethod]
+        public void Test_ValidatingSequences()
+        {
+            Sequence empty = new Sequence();
+            Sequence seriesOfTwo = new Sequence(sequenceType.Series, 2, new Card(0, 0));
+            Sequence validSingleSeq = new Sequence(sequenceType.Single, 1, new Card(0, 0));
+            Sequence validSeq = new Sequence(sequenceType.Flat, 4, new Card(0, 0)); // Valid even though impossible
+            
+            Assert.IsFalse(empty.isValidSequence());
+            Assert.IsFalse(seriesOfTwo.isValidSequence());
+            Assert.IsTrue(validSingleSeq.isValidSequence());
+            Assert.IsTrue(validSeq.isValidSequence());
+        }
     }
 }

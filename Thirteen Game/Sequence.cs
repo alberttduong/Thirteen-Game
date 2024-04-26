@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,6 +80,16 @@ namespace Thirteen_Game
         public bool isEmpty()
         {
             return this.size == 0;
+        }
+
+        // Sequences are not valid when they are empty.
+        // Series must be 3 cards or more or else the
+        // sequence is not valid.
+        public bool isValidSequence()
+        {
+            if (isEmpty()) return false;
+            if (this.type == sequenceType.Series && this.size < 3) return false;
+            return true;
         }
 
         // Adds a card to this Sequence
