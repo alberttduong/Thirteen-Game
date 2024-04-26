@@ -102,18 +102,11 @@ namespace Thirteen_Game
         public void addCardToSingle(Card card)
         {
             if (card.number == this.lastCard.number)
-            {
                 update(sequenceType.Flat, 2, card);
-            }
             else if (card.number == this.lastCard.number + 1)
-            {
                 update(sequenceType.Series, 2, card);
-
-            }
             else
-            {
                 update_to_empty();
-            }
         }
 
         // Adding a card to this Sequence, when valid,
@@ -127,27 +120,17 @@ namespace Thirteen_Game
         public void addCard(Card card)
         {
             if (isEmpty())
-            {
                 update(sequenceType.Single, 1, card);
-            } else
+            else
             {
                 if (this.type == sequenceType.Single)
-                {
                     addCardToSingle(card);
-                }
                 else if (this.type == sequenceType.Flat && card.number == this.lastCard.number)
-                {
                     update(sequenceType.Flat, this.size + 1, card);
-
-                }
                 else if (this.type == sequenceType.Series && card.number == this.lastCard.number + 1)
-                {
                     update(sequenceType.Series, this.size + 1, card);
-                }
                 else
-                {
                     update_to_empty();
-                }
             }
         }
 
@@ -161,9 +144,7 @@ namespace Thirteen_Game
             {
                 newSeq.addCard(card);
                 if (newSeq.isEmpty())
-                {
                     return newSeq;
-                }
             }
             return newSeq;
         }

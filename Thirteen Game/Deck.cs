@@ -17,9 +17,7 @@ namespace Thirteen_Game
                 for (int suit = 0; suit < Card.NumOfSuits; suit++)
                 {
                     for (int number = 0; number < Card.NumOfNumbers; number++)
-                    {
                         yield return (suit, number);
-                    }
                 }
             }
         }
@@ -61,9 +59,7 @@ namespace Thirteen_Game
         public void printDeck()
         {
             foreach (Card card in cards)
-            {
-                Console.WriteLine(card);   
-            }
+                Console.WriteLine(card);
         }
 
         public Deck()
