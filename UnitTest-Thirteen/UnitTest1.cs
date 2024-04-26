@@ -158,5 +158,32 @@ namespace UnitTest_Thirteen
                 Assert.AreEqual(seq, expectedSequences[i]);
             }
         }
+
+        [TestMethod]
+        public void Test_AddingToASeriesSequence()
+        {
+            const int TEST_CASES = 3;
+
+            Card[] cardsAdded =
+            {
+                new Card(3, 0),
+                new Card(4, 2),
+                new Card(5, 1),
+            };
+
+            Sequence[] expectedSequences = {
+                new Sequence(),
+                new Sequence(sequenceType.Series, 5, cardsAdded[1]),
+                new Sequence(),
+            };
+
+            Sequence seq = new Sequence();
+            for (int i = 0; i < TEST_CASES; i++)
+            {
+                seq.update(sequenceType.Series, 4, new Card(3, 3));
+                seq.addCard(cardsAdded[i]);
+                Assert.AreEqual(seq, expectedSequences[i]);
+            }
+        }
     }
 }
