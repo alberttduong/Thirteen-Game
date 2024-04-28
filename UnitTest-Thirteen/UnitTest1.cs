@@ -140,7 +140,7 @@ namespace UnitTest_Thirteen
         public void Test_AddingASingleGivesAFlatSequence()
         {
             Sequence seq = new Sequence(sequenceType.Single, 1, new Card(1, 1));
-            Card cardWithSameNum = new Card(1, 0); 
+            Card cardWithSameNum = new Card(1, 0);
             seq.addCard(cardWithSameNum);
             Assert.AreEqual(seq, new Sequence(sequenceType.Flat, 2, cardWithSameNum));
         }
@@ -215,7 +215,7 @@ namespace UnitTest_Thirteen
             Sequence seriesOfTwo = new Sequence(sequenceType.Series, 2, new Card(0, 0));
             Sequence validSingleSeq = new Sequence(sequenceType.Single, 1, new Card(0, 0));
             Sequence validSeq = new Sequence(sequenceType.Flat, 4, new Card(0, 0)); // Valid even though impossible
-            
+
             Assert.IsFalse(empty.isValidSequence());
             Assert.IsFalse(seriesOfTwo.isValidSequence());
             Assert.IsTrue(validSingleSeq.isValidSequence());
@@ -257,6 +257,35 @@ namespace UnitTest_Thirteen
             Assert.IsFalse(lowerSeriesOf3 > seriesOf3);
             Assert.IsFalse(seriesOf4 > seriesOf3);
             Assert.IsFalse(flat > seriesOf3);
+        }
+
+        [TestMethod]
+        public void Test_SequenceFromCards()
+        {
+            Card[] cards = { new Card(0, 0), new Card(1, 2), new Card(2, 1) };
+            Assert.AreEqual(Sequence.sequenceFromCards(cards),
+                new Sequence(sequenceType.Series, 3, new Card(2, 1)));
+
+            cards = new Card[] { new Card(0, 0), new Card(0, 2) };
+            Assert.AreEqual(Sequence.sequenceFromCards(cards),
+                new Sequence(sequenceType.Flat, 2, new Card(0, 2)));
+
+            cards = new Card[] { new Card(0, 0) };
+            Assert.AreEqual(Sequence.sequenceFromCards(cards),
+                new Sequence(sequenceType.Single, 1, new Card(0, 0)));
+
+            // Invalid Sequences
+            cards = new Card[] { new Card(0, 0), new Card(2, 1) };
+            Assert.AreEqual(Sequence.sequenceFromCards(cards),
+                new Sequence());
+
+            cards = new Card[] { new Card(1, 1), new Card(1, 2), new Card(2, 3) };
+            Assert.AreEqual(Sequence.sequenceFromCards(cards),
+                new Sequence());
+
+            cards = new Card[] { new Card(1, 1), new Card(2, 2), new Card(4, 3) };
+            Assert.AreEqual(Sequence.sequenceFromCards(cards),
+                new Sequence());
         }
     }
 }

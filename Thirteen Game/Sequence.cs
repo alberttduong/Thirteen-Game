@@ -145,9 +145,10 @@ namespace Thirteen_Game
             }
         }
 
-        // From an array of cards, generate a Sequence
+        // From a SORTED array of cards, generate a Sequence
         // and return it.  If the sequence is invalid,
-        // return an empty Sequence.
+        // return an empty Sequence.  Does not account for 
+        // Series of invalid sizes (less than 3).
         public static Sequence sequenceFromCards(Card[] cards)
         {
             Sequence newSeq = new Sequence();
