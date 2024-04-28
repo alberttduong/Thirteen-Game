@@ -49,6 +49,20 @@ namespace Thirteen_Game
             return !a.Equals(b);
         }
 
+        public static bool operator <(Card a, Card b)
+        {
+            if (a.number < b.number) return true;
+            if (a.number == b.number && a.suit < b.suit) return true;
+            return false;
+        }
+
+        public static bool operator >(Card a, Card b)
+        {
+            if (a.number > b.number) return true;
+            if (a.number == b.number && a.suit > b.suit) return true;
+            return false;
+        }
+
         public static string numberName(int num)
         {
             // 0 - 12

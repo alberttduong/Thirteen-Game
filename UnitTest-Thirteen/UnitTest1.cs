@@ -33,6 +33,28 @@ namespace UnitTest_Thirteen
             Assert.AreEqual(Card.numberName(7), "10");
             Assert.AreEqual(Card.numberName(8), "Jack");
         }
+
+        [TestMethod]
+        public void Test_CardLessThan()
+        {
+            Card card = new Card(3, 2);
+            Assert.IsTrue(card < new Card(4, 2));
+            Assert.IsTrue(card < new Card(3, 3));
+
+            Assert.IsFalse(card < new Card(2, 1));
+            Assert.IsFalse(card < new Card(3, 1));
+        }
+
+        [TestMethod]
+        public void Test_CardGreaterThan()
+        {
+            Card card = new Card(3, 2);
+            Assert.IsTrue(card > new Card(1, 2));
+            Assert.IsTrue(card > new Card(3, 0));
+
+            Assert.IsFalse(card > new Card(10, 1));
+            Assert.IsFalse(card > new Card(3, 3));
+        }
     }
 
     [TestClass]
@@ -198,6 +220,43 @@ namespace UnitTest_Thirteen
             Assert.IsFalse(seriesOfTwo.isValidSequence());
             Assert.IsTrue(validSingleSeq.isValidSequence());
             Assert.IsTrue(validSeq.isValidSequence());
+        }
+
+        [TestMethod]
+        public void Test_SequenceGreaterThan()
+        {
+            Sequence empty = new Sequence();
+            Sequence single = new Sequence(sequenceType.Single, 1, new Card(2, 2));
+            Sequence higherSingle = new Sequence(sequenceType.Single, 1, new Card(2, 3));
+            Sequence lowerSingle = new Sequence(sequenceType.Single, 1, new Card(0, 0));
+
+            Assert.IsTrue(single > empty);
+            Assert.IsTrue(higherSingle > single);
+            Assert.IsFalse(lowerSingle > single);
+
+            Sequence flat = new Sequence(sequenceType.Flat, 2, new Card(1, 1));
+            Sequence diffSizeFlat = new Sequence(sequenceType.Flat, 3, new Card(2, 2));
+            Sequence higherFlat = new Sequence(sequenceType.Flat, 2, new Card(1, 2));
+            Sequence anotherHigherFlat = new Sequence(sequenceType.Flat, 2, new Card(2, 1));
+
+            Assert.IsTrue(flat > empty);
+            Assert.IsTrue(higherFlat > flat);
+            Assert.IsTrue(anotherHigherFlat > flat);
+            Assert.IsFalse(diffSizeFlat > flat);
+            Assert.IsFalse(flat > single);
+
+            Sequence seriesOf3 = new Sequence(sequenceType.Series, 3, new Card(5, 1));
+            Sequence seriesOf4 = new Sequence(sequenceType.Series, 4, new Card(10, 0));
+            Sequence lowerSeriesOf3 = new Sequence(sequenceType.Series, 3, new Card(5, 0));
+            Sequence higherSeriesOf3 = new Sequence(sequenceType.Series, 3, new Card(6, 1));
+            Sequence anotherHigherSeriesOf3 = new Sequence(sequenceType.Series, 3, new Card(5, 2));
+
+            Assert.IsTrue(seriesOf3 > empty);
+            Assert.IsTrue(higherSeriesOf3 > seriesOf3);
+            Assert.IsTrue(anotherHigherSeriesOf3 > seriesOf3);
+            Assert.IsFalse(lowerSeriesOf3 > seriesOf3);
+            Assert.IsFalse(seriesOf4 > seriesOf3);
+            Assert.IsFalse(flat > seriesOf3);
         }
     }
 }

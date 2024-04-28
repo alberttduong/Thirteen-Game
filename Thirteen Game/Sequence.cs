@@ -76,6 +76,17 @@ namespace Thirteen_Game
         {
             return !a.Equals(b);
         }
+        public static bool operator >(Sequence a, Sequence b)
+        {
+            if (b.isEmpty() && !a.isEmpty()) return true;
+            if (a.type != b.type) return false;
+            if (a.size != b.size) return false;
+            return a.lastCard > b.lastCard;
+        }
+        public static bool operator <(Sequence a, Sequence b)
+        {
+            return !(a > b);
+        }
 
         public bool isEmpty()
         {
