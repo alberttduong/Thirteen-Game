@@ -288,4 +288,20 @@ namespace UnitTest_Thirteen
                 new Sequence());
         }
     }
+
+    [TestClass]
+    public class UnitTest_Player
+    {
+        [TestMethod]
+        public void Test_SortHand()
+        {
+            Player p = new Player(0);
+            p.hand = new List<Card> {new Card(0, 1), new Card(2, 1), new Card(1, 0), new Card(2, 2) };
+            p.sortHand();
+            Assert.AreEqual(p.hand[0], new Card(0, 1));
+            Assert.AreEqual(p.hand[1], new Card(1, 0));
+            Assert.AreEqual(p.hand[2], new Card(2, 1));
+            Assert.AreEqual(p.hand[3], new Card(2, 2));
+        }
+    }
 }

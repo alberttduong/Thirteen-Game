@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Thirteen_Game
 {
-    public class Card
+    public class Card : IComparable
     {
         public const int NumOfSuits = 4;
         public const int NumOfNumbers = 13;
@@ -18,6 +18,15 @@ namespace Thirteen_Game
         {
             this.number = number;
             this.suit = suit;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+            Card card = obj as Card;
+            if (card < this) return 1;
+            if (card > this) return -1;
+            return 0;
         }
 
         public override int GetHashCode()
