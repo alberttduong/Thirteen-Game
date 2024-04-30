@@ -80,9 +80,25 @@ namespace UnitTest_Thirteen
             {
                 enumerator.MoveNext();
                 (int suit, int num) = enumerator.Current;
-                Assert.AreEqual(deck.cards[i].suit, suit);
-                Assert.AreEqual(deck.cards[i].number, num);
+                Assert.AreEqual(deck.temp_cards[i].suit, suit);
+                Assert.AreEqual(deck.temp_cards[i].number, num);
             }
+        }
+
+        [TestMethod]
+        public void Test_Deal13Cards()
+        {
+            Deck deck = new Deck();
+            deck.shuffle();
+            Player player = new Player(1);
+
+            Assert.AreEqual(deck.count(), 52);
+            Assert.AreEqual(player.hand.Count, 0);
+
+            deck.dealThirteenCards(player);
+
+            Assert.AreEqual(deck.count(), 52 - 13);
+            Assert.AreEqual(player.hand.Count, 13);
         }
     }
 

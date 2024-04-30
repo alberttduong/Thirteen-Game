@@ -8,7 +8,8 @@ namespace Thirteen_Game
 {
     public class Deck
     {
-        public Card[] cards = new Card[52];
+        public Card[] temp_cards = new Card[52];
+        public Stack<Card> cards = new Stack<Card>(52); // Stack of cards is initialized after shuffling
 
         public struct StandardDeck
         {
@@ -27,17 +28,16 @@ namespace Thirteen_Game
             return suit * Card.NumOfNumbers + num;
         }
 
-        public void initializeCards()
-        {
+        public Deck() {
             var standardDeck = new StandardDeck();
             foreach ((int suit, int num) in standardDeck)
             {
                 int index = suitAndNumToOrderedIndex(suit, num);
-                this.cards[index] = new Card(num, suit);
+                this.temp_cards[index] = new Card(num, suit);
             }
         }
 
-        public void shuffleDeck()
+        public void shuffle()
         {
             // Swaps 2 random cards in the deck
             // numShuffles times in order to shuffle the deck.
@@ -50,21 +50,31 @@ namespace Thirteen_Game
                 int first = random.Next(52);
                 int second = random.Next(52);
 
-                Card temp = cards[first];
-                cards[first] = cards[second];
-                cards[second] = temp;
+                Card temp = temp_cards[first];
+                temp_cards[first] = temp_cards[second];
+                temp_cards[second] = temp;
             }
+
+            cards = new Stack<Card>(temp_cards);
+        }
+
+        public void dealThirteenCards(Player player)
+        {
+            for (int i = 0; i < 13; ++i)
+            {
+                player.hand.Add(this.cards.Pop());
+            }
+        }
+
+        public int count()
+        {
+            return this.cards.Count;
         }
 
         public void printDeck()
         {
             foreach (Card card in cards)
                 Console.WriteLine(card);
-        }
-
-        public Deck()
-        {
-            initializeCards();
         }
     }
 }
