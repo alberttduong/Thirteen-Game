@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Runtime.ExceptionServices;
@@ -153,6 +154,17 @@ namespace Thirteen_Game
         {
             Sequence newSeq = new Sequence();
             foreach (var card in cards)
+            {
+                newSeq.addCard(card);
+                if (newSeq.isEmpty())
+                    return newSeq;
+            }
+            return newSeq;
+        }
+        public static Sequence sequenceFromCards(List<Card> cards)
+        {
+            Sequence newSeq = new Sequence();
+            foreach (Card card in cards)
             {
                 newSeq.addCard(card);
                 if (newSeq.isEmpty())

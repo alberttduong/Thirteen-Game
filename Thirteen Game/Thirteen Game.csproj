@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Card.cs" />
     <Compile Include="Deck.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="Thirteen.cs" />
