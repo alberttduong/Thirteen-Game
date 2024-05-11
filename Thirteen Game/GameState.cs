@@ -12,6 +12,8 @@ namespace Thirteen_Game
 
         Player[] players = new Player[NUM_PLAYERS];
         Player activePlayer;
+
+        Player lastSequencePlayer;
         Sequence lastSequence = new Sequence();
 
         public GameState() {
@@ -32,9 +34,12 @@ namespace Thirteen_Game
         {
             Sequence seq = activePlayer.sequenceFromHand(indices);
 
-            if (seq.isValidSequence())
-            {
+            if (lastSequencePlayer == activePlayer)
+                lastSequence = new Sequence();
+
+            if (seq.isValidSequence() && seq > lastSequence) {
                 activePlayer.removeFromHand(indices);
+                lastSequencePlayer = activePlayer;
                 lastSequence = seq;
             }
         }
