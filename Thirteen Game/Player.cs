@@ -55,12 +55,17 @@ namespace Thirteen_Game
 
         public Bot(int id) : base(id) { }
 
+        public List<int> betterSeries(Sequence lastSequence)
+        {
+            return betterSeries(new Stack<Card>(hand), lastSequence, new List<int> { }, hand.Count() - 1);
+        }
+
         public List<int> betterFlat(Sequence lastSequence)
         {
             return betterFlat(new Stack<Card>(hand), lastSequence, new List<int> { }, hand.Count() - 1);
         }
 
-        // Param: reverse hand as stack
+        // Params: reverse hand as stack
         // Returns list of indices, none if has to pass
         private List<int> betterFlat(Stack<Card> hand, Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
         {
@@ -107,9 +112,9 @@ namespace Thirteen_Game
             return betterFlat(hand, lastSequence, cardsFound, index - 1, lastNum);
         }
 
-        // Param: reverse hand as stack
+        // Params: reverse hand as stack
         // Returns list of indices, none if has to pass
-        /*
+
         private List<int> betterSeries(Stack<Card> hand, Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
         {
             if (cardsFound.Count() == lastSequence.size)
@@ -123,8 +128,36 @@ namespace Thirteen_Game
 
             Card thisCard = hand.Pop();
 
+            if (lastNum == null)
+            {
+                if (thisCard < lastSequence.lastCard)
+                {
+                    return new List<int> { };
+                }
+                else
+                {
+                    lastNum = thisCard.number;
+                    cardsFound.Add(index);
+                }
+            }
+            else if (thisCard.number == lastNum)
+            {
+                if (thisCard > lastSequence.lastCard) {
+                    cardsFound.Remove(cardsFound.Count() - 1);
+                    cardsFound.Add(index);
+                }
+            } else if (thisCard.number == lastNum - 1)
+            {
+                lastNum--;
+                cardsFound.Add(index);
+            } else
+            {
+                lastNum = thisCard.number;
+                cardsFound.Clear();
+                cardsFound.Add(index);
+            }
 
-
-        }*/
+            return betterSeries(hand, lastSequence, cardsFound, index - 1, lastNum);
+        }
     }
 }
