@@ -54,14 +54,14 @@ namespace Thirteen_Game
 
         public Bot(int id) : base(id) { }
 
-        public List<int> betterSeries(Sequence lastSequence)
+        public List<int> betterFlat(Sequence lastSequence)
         {
-            return betterSeries(new Stack<Card>(hand), lastSequence, new List<int> { }, hand.Count() - 1);
+            return betterFlat(new Stack<Card>(hand), lastSequence, new List<int> { }, hand.Count() - 1);
         }
 
         // Param: reverse hand as stack
         // Returns list of indices, none if has to pass
-        private List<int> betterSeries(Stack<Card> hand, Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
+        private List<int> betterFlat(Stack<Card> hand, Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
         {
             if (cardsFound.Count() == lastSequence.size)
             {
@@ -87,8 +87,7 @@ namespace Thirteen_Game
                 }
                 cardsFound.Add(index);
             }
-            return betterSeries(hand, lastSequence, cardsFound, index - 1, lastNum);
+            return betterFlat(hand, lastSequence, cardsFound, index - 1, lastNum);
         }
-
     }
 }

@@ -350,14 +350,14 @@ namespace UnitTest_Thirteen
                 new Card(6, 2), // 9
             };
 
-            var actual1 = bot.betterSeries(new Sequence(sequenceType.Series, 2, new Card(5, 1)));
+            var actual1 = bot.betterFlat(new Sequence(sequenceType.Series, 2, new Card(5, 1)));
             var expected1 = new List<int> { 9, 8 };
 
-            var actual2 = bot.betterSeries(new Sequence(sequenceType.Series, 3, new Card(1, 1)));
+            var actual2 = bot.betterFlat(new Sequence(sequenceType.Series, 3, new Card(1, 1)));
             var expected2 = new List<int> { 3, 2, 1 };
 
-            var actual3 = bot.betterSeries(new Sequence(sequenceType.Series, 4, new Card(0, 0)));
-            var actual4 = bot.betterSeries(new Sequence(sequenceType.Series, 2, new Card(6, 3)));
+            var actual3 = bot.betterFlat(new Sequence(sequenceType.Series, 4, new Card(0, 0)));
+            var actual4 = bot.betterFlat(new Sequence(sequenceType.Series, 2, new Card(6, 3)));
             var expectedNone = new List<int> { };
 
             Assert.IsTrue(actual1.SequenceEqual(expected1));
