@@ -326,7 +326,7 @@ namespace UnitTest_Thirteen
         public void Test_RemoveFromHand()
         {
             p.hand = new List<Card> { new Card(0, 1), new Card(2, 1), new Card(1, 0), new Card(2, 2) };
-            p.removeFromHand(new List<int>{1, 2});
+            p.removeFromHand(new List<int> { 1, 2 });
 
             Assert.AreEqual(p.hand.Count, 2);
             Assert.AreEqual(p.hand[0], new Card(0, 1));
@@ -334,36 +334,58 @@ namespace UnitTest_Thirteen
         }
 
         [TestMethod]
-        public void Test_BetterSeries()
+        public void Test_BetterFlat()
         {
             var bot = new Bot(1);
-            bot.hand = new List<Card> { 
+            bot.hand = new List<Card> {
                 new Card(0, 1), // 0
-                new Card(2, 0), 
-                new Card(2, 1), 
+                new Card(2, 0),
+                new Card(2, 1),
                 new Card(2, 2),
                 new Card(3, 0),
                 new Card(4, 2),
                 new Card(5, 0),
-                new Card(5, 2),
-                new Card(6, 0),
-                new Card(6, 2), // 9
+                new Card(5, 2), // 7
             };
 
-            var actual1 = bot.betterFlat(new Sequence(sequenceType.Series, 2, new Card(5, 1)));
-            var expected1 = new List<int> { 9, 8 };
+            var actual1 = bot.betterFlat(new Sequence(sequenceType.Flat, 2, new Card(5, 1)));
+            var expected1 = new List<int> { 7, 6 };
 
-            var actual2 = bot.betterFlat(new Sequence(sequenceType.Series, 3, new Card(1, 1)));
+            var actual2 = bot.betterFlat(new Sequence(sequenceType.Flat, 3, new Card(1, 1)));
             var expected2 = new List<int> { 3, 2, 1 };
 
-            var actual3 = bot.betterFlat(new Sequence(sequenceType.Series, 4, new Card(0, 0)));
-            var actual4 = bot.betterFlat(new Sequence(sequenceType.Series, 2, new Card(6, 3)));
+            var actual3 = bot.betterFlat(new Sequence(sequenceType.Flat, 4, new Card(0, 0)));
+            var actual4 = bot.betterFlat(new Sequence(sequenceType.Flat, 2, new Card(6, 3)));
+
             var expectedNone = new List<int> { };
 
             Assert.IsTrue(actual1.SequenceEqual(expected1));
             Assert.IsTrue(actual2.SequenceEqual(expected2));
             Assert.IsTrue(actual3.SequenceEqual(expectedNone));
             Assert.IsTrue(actual4.SequenceEqual(expectedNone));
+        }
+
+        [TestMethod]
+        public void Test_BetterFlatChoosesMinimum()
+        {
+            var bot = new Bot(1);
+            bot.hand = new List<Card> {
+                new Card(0, 1), // 0
+                new Card(2, 0),
+                new Card(2, 1),
+                new Card(2, 2),
+                new Card(3, 0),
+                new Card(4, 2),
+                new Card(5, 0),
+                new Card(5, 2),
+                new Card(6, 0),
+                new Card(6, 2), // 9 
+            };
+
+            var actual5 = bot.betterFlat(new Sequence(sequenceType.Flat, 2, new Card(2, 0)));
+            var expected5 = new List<int> { 2, 1 };
+
+            Assert.IsTrue(actual5.SequenceEqual(expected5));
         }
     }
 }
