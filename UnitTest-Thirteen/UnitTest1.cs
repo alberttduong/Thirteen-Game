@@ -434,6 +434,30 @@ namespace UnitTest_Thirteen
             Assert.IsTrue(actual.SequenceEqual(expected));
         }
 
+        [TestMethod]
+        public void Test_BiggestSeries()
+        {
+            var bot = new Bot(1);
+            bot.hand = new List<Card> {
+                new Card(0, 1), // 0
+                new Card(2, 0),
+                new Card(2, 1),
+                new Card(2, 2),
+                new Card(3, 0),
+                new Card(4, 2),
+                new Card(5, 0),
+                new Card(5, 2), // 7
+                new Card(6, 2),
+                new Card(8, 2),
+                new Card(10, 2)
+            };
+
+            var actual = bot.biggestSeries();
+            var expected = new List<int> { 1, 4, 5, 6, 8 };
+
+            Assert.IsTrue(actual.SequenceEqual(expected));
+        }
+
         void printIndx(List<int> l)
         {
             Console.WriteLine("count: " + l.Count());

@@ -57,11 +57,6 @@ namespace Thirteen_Game
 
         public Bot(int id) : base(id) { }
 
-        public List<int> betterSeries(Sequence lastSequence)
-        {
-            return betterSeries(lastSequence, new List<int> { }, hand.Count() - 1);
-        }
-
         public List<int> betterFlat(Sequence lastSequence)
         {
             return betterFlat(lastSequence, new List<int> { }, hand.Count() - 1);
@@ -105,6 +100,11 @@ namespace Thirteen_Game
             return betterFlat(lastSequence, cardsFound, index - 1, lastNum);
         }
 
+        public List<int> betterSeries(Sequence lastSequence)
+        {
+            return betterSeries(lastSequence, new List<int> { }, hand.Count() - 1);
+        }
+
         // Params: reverse hand as stack
         // Returns list of indices, none if has to pass
 
@@ -112,7 +112,7 @@ namespace Thirteen_Game
         {
             if (cardsFound.Count() == lastSequence.size)
             {
-                for (index--; index != -1;  index--)
+                for (index--; index != -1; index--)
                 {
                     if (hand[index].number != lastNum)
                     {
@@ -187,8 +187,36 @@ namespace Thirteen_Game
             {
                 var evenBiggerFlat = biggestFlat(null, new List<int> { }, index);
                 if (evenBiggerFlat.Count() > cardsFound.Count())
-                { 
+                {
                     return evenBiggerFlat;
+                }
+                return cardsFound;
+            }
+        }
+        public List<int> biggestSeries()
+        {
+            return biggestSeries(null, new List<int> { });
+        }
+
+        private List<int> biggestSeries(int? lastNum, List<int> cardsFound, int index = 0)
+        {
+            if (index == hand.Count())
+            {
+                return cardsFound;
+            }
+            var thisCard = hand[index];
+            if (lastNum == null || thisCard.number == lastNum + 1)
+            {
+                cardsFound.Add(index);
+                return biggestSeries(thisCard.number, cardsFound, index + 1);
+            } else if (thisCard.number == lastNum)
+            {
+                return biggestSeries(lastNum, cardsFound, index + 1);
+            } else { 
+                var evenBiggerSeries = biggestSeries(null, new List<int> { }, index);
+                if (evenBiggerSeries.Count() > cardsFound.Count())
+                {
+                    return evenBiggerSeries;
                 }
                 return cardsFound;
             }
