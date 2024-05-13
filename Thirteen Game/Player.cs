@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
@@ -57,30 +59,21 @@ namespace Thirteen_Game
 
         public List<int> betterSeries(Sequence lastSequence)
         {
-            return betterSeries(new Stack<Card>(hand), lastSequence, new List<int> { }, hand.Count() - 1);
+            return betterSeries(lastSequence, new List<int> { }, hand.Count() - 1);
         }
 
         public List<int> betterFlat(Sequence lastSequence)
         {
-            return betterFlat(new Stack<Card>(hand), lastSequence, new List<int> { }, hand.Count() - 1);
+            return betterFlat(lastSequence, new List<int> { }, hand.Count() - 1);
         }
 
         // Params: reverse hand as stack
         // Returns list of indices, none if has to pass
-        private List<int> betterFlat(Stack<Card> hand, Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
+        private List<int> betterFlat(Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
         {
             if (cardsFound.Count() == lastSequence.size)
             {
-                Stack<Card> handCopy = new Stack<Card>(this.hand);
-
-                int pop = handCopy.Count() - (lastSequence.size) - index;
-                int newIndex = handCopy.Count() - pop - 1;
-
-                for (int i = 0; i < pop; i++)
-                    handCopy.Pop();
-
-                var evenBetterFlat = betterFlat(handCopy, lastSequence, new List<int> { }, newIndex);
-
+                var evenBetterFlat = betterFlat(lastSequence, new List<int> { }, lastSequence.size + index - 1);
                 if (evenBetterFlat.Count() == 0)
                 {
                     return cardsFound;
@@ -89,12 +82,12 @@ namespace Thirteen_Game
                     return evenBetterFlat;
                 }
             }
-            if (hand.Count() == 0)
+            if (index == -1)
             {
                 return new List<int> { };
             }
 
-            Card thisCard = hand.Pop();
+            Card thisCard = hand[index];
 
             if (lastNum == null) {
                 if (thisCard < lastSequence.lastCard) {
@@ -109,24 +102,39 @@ namespace Thirteen_Game
             }
             cardsFound.Add(index);
 
-            return betterFlat(hand, lastSequence, cardsFound, index - 1, lastNum);
+            return betterFlat(lastSequence, cardsFound, index - 1, lastNum);
         }
 
         // Params: reverse hand as stack
         // Returns list of indices, none if has to pass
 
-        private List<int> betterSeries(Stack<Card> hand, Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
+        private List<int> betterSeries(Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
         {
             if (cardsFound.Count() == lastSequence.size)
             {
+                for (index--; index != -1;  index--)
+                {
+                    if (hand[index].number != lastNum)
+                    {
+                        break;
+                    }
+                    cardsFound.RemoveAt(cardsFound.Count() - 1);
+                    cardsFound.Add(index);
+                }
+                var evenBetterSeries = betterSeries(lastSequence, new List<int> { }, cardsFound[1]);
+                if (evenBetterSeries.Count() != 0)
+                {
+                    return evenBetterSeries;
+                }
                 return cardsFound;
             }
-            if (hand.Count() == 0)
+
+            if (index == -1)
             {
                 return new List<int> { };
             }
 
-            Card thisCard = hand.Pop();
+            Card thisCard = hand[index];
 
             if (lastNum == null)
             {
@@ -142,10 +150,8 @@ namespace Thirteen_Game
             }
             else if (thisCard.number == lastNum)
             {
-                if (thisCard > lastSequence.lastCard) {
-                    cardsFound.Remove(cardsFound.Count() - 1);
-                    cardsFound.Add(index);
-                }
+                cardsFound.RemoveAt(cardsFound.Count() - 1);
+                cardsFound.Add(index);
             } else if (thisCard.number == lastNum - 1)
             {
                 lastNum--;
@@ -157,7 +163,35 @@ namespace Thirteen_Game
                 cardsFound.Add(index);
             }
 
-            return betterSeries(hand, lastSequence, cardsFound, index - 1, lastNum);
+            return betterSeries(lastSequence, cardsFound, index - 1, lastNum);
+        }
+
+        public List<int> biggestFlat()
+        {
+            return biggestFlat(null, new List<int> { }, 0);
+        }
+
+        // Sorted hand
+        private List<int> biggestFlat(int? lastNum, List<int> cardsFound, int index = 0)
+        {
+            if (index == hand.Count())
+            {
+                return cardsFound;
+            }
+            var thisCard = hand[index];
+            if (lastNum == null || thisCard.number == lastNum)
+            {
+                cardsFound.Add(index);
+                return biggestFlat(thisCard.number, cardsFound, index + 1);
+            } else
+            {
+                var evenBiggerFlat = biggestFlat(null, new List<int> { }, index);
+                if (evenBiggerFlat.Count() > cardsFound.Count())
+                { 
+                    return evenBiggerFlat;
+                }
+                return cardsFound;
+            }
         }
     }
 }

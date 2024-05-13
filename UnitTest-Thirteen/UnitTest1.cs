@@ -393,6 +393,31 @@ namespace UnitTest_Thirteen
         {
             var bot = new Bot(1);
             bot.hand = new List<Card> {
+                new Card(1, 1), // 0
+                new Card(2, 0),
+                new Card(2, 1),
+                new Card(2, 2),
+                new Card(3, 1), 
+                new Card(4, 2),
+                new Card(5, 0),
+                new Card(5, 2), // 7
+            };
+
+            var actual = bot.betterSeries(new Sequence(sequenceType.Series, 3, new Card(5, 1)));
+            var expected = new List<int> { 6, 5, 4 };
+
+            var actual2 = bot.betterSeries(new Sequence(sequenceType.Series, 3, new Card(4, 1)));
+            var expected2 = new List<int> { 5, 4, 1 };
+
+            Assert.IsTrue(actual.SequenceEqual(expected));
+            Assert.IsTrue(actual2.SequenceEqual(expected2));
+        }
+
+        [TestMethod]
+        public void Test_BiggestFlat()
+        {
+            var bot = new Bot(1);
+            bot.hand = new List<Card> {
                 new Card(0, 1), // 0
                 new Card(2, 0),
                 new Card(2, 1),
@@ -403,17 +428,15 @@ namespace UnitTest_Thirteen
                 new Card(5, 2), // 7
             };
 
-            var actual = bot.betterSeries(new Sequence(sequenceType.Series, 3, new Card(5, 1)));
-            var expected = new List<int> { 7, 5, 4 };
-
-            var actual2 = bot.betterSeries(new Sequence(sequenceType.Series, 3, new Card(4, 1)));
-            var expected2 = new List<int> { 7, 5, 4 };
+            var actual = bot.biggestFlat();
+            var expected = new List<int> { 1, 2, 3 };
 
             Assert.IsTrue(actual.SequenceEqual(expected));
         }
 
         void printIndx(List<int> l)
         {
+            Console.WriteLine("count: " + l.Count());
             foreach (int i in l)
             {
                 Console.WriteLine(i);
