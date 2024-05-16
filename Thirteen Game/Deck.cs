@@ -58,7 +58,7 @@ namespace Thirteen_Game
             cards = new Stack<Card>(temp_cards);
         }
 
-        public void dealThirteenCards(Player player)
+        public void dealThirteenCards(TPlayer player)
         {
             for (int i = 0; i < 13; ++i)
             {

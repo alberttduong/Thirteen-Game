@@ -14,7 +14,7 @@ namespace UnitTest_Thirteen
         [TestMethod]
         public void Test_CardToString()
         {
-            Assert.AreEqual(card.ToString(), "3 of Spades");
+            Assert.AreEqual(card.ToString(), "3S");
         }
 
         [TestMethod]
@@ -334,7 +334,11 @@ namespace UnitTest_Thirteen
             Assert.AreEqual(p.hand[0], new Card(0, 1));
             Assert.AreEqual(p.hand[1], new Card(2, 2));
         }
+    }
 
+    [TestClass]
+    public class UnitTest_Bot
+    {
         [TestMethod]
         public void Test_BetterFlat()
         {

@@ -12,10 +12,10 @@ namespace Thirteen_Game
         const int NUM_PLAYERS = 4;
         const int NUM_BOTS = 3;
 
-        Player[] players = new Player[NUM_PLAYERS];
-        public Player activePlayer;
+        TPlayer[] players = new TPlayer[NUM_PLAYERS];
+        TPlayer activePlayer;
 
-        Player lastSequencePlayer;
+        TPlayer lastSequencePlayer;
         Sequence lastSequence = new Sequence();
 
         public bool won = false;
@@ -44,87 +44,14 @@ namespace Thirteen_Game
             Console.WriteLine($"{activePlayer.header()} has 3S and will go first.");
         }
 
-        public List<int> playerInput()
+        public void play()
         {
-            while (true)
+            Sequence seq = activePlayer.play(turn, lastSequence, lastSequencePlayer);
+            if (seq.type != sequenceType.Null)
             {
-                Console.WriteLine("Enter which cards you want to play");
-                List<int> indices = new List<int> { };
-
-                String input = Console.ReadLine();
-                if (input == "p")
-                {
-                    return indices;
-                }
-
-                String[] words = input.Trim().Split();
-                try
-                {
-                    foreach (var word in words) 
-                        indices.Add(ushort.Parse(word));
-
-                    indices = indices.Distinct().ToList();
-                    indices.Sort();
-
-                    return indices;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Error: Invalid indices");
-                }
+                lastSequence = seq;
+                lastSequencePlayer = activePlayer;
             }
-        }
-
-        public void printTurn()
-        {
-            Console.WriteLine("Turn " + turn);
-        }
-
-        public void botPlay()
-        {
-            Bot player = (Bot)activePlayer;
-            List<int> indices;
-            if (turn == 1)
-                indices = player.biggestSequenceWithThreeSpades();
-            else
-                indices = player.betterSequence(lastSequence);
-           
-            if (indices.Count() == 0 && player == lastSequencePlayer)
-                indices = player.biggestSequence(lastSequence);
-
-            player.printPlayedCards(indices);
-            playIndices(indices);
-        }
-        
-        public void playerPlay()
-        {
-            if (lastSequencePlayer == activePlayer)
-                lastSequence = new Sequence();
-
-            while (true) {
-                var indices = playerInput();
-                Sequence seq = activePlayer.sequenceFromHand(indices);
-
-                if (turn == 1 && (indices.Count() == 0 || activePlayer.hand[indices[0]] != new Card(0, 0)))
-                {
-                    Console.WriteLine("Error: Starting play must include 3S");
-                    continue;
-                }
-
-                if (seq.isValidSequence() && seq > lastSequence)
-                {
-                    activePlayer.printPlayedCards(indices);
-                    playIndices(indices);
-                    break;
-                }
-
-                Console.WriteLine("Error: Invalid Sequence");
-            }
-        }
-
-        public void printLastSequence()
-        {
-            Console.WriteLine(lastSequence);
         }
 
         public void endTurn()
@@ -133,15 +60,14 @@ namespace Thirteen_Game
             turn++;
         }
 
-        public void playIndices(List<int> indices)
+        public void printTurn()
         {
-            if (indices.Count > 0)
-            {
-                lastSequence = activePlayer.sequenceFromHand(indices);
-                lastSequencePlayer = activePlayer;
-                activePlayer.removeFromHand(indices);
-                activePlayer.sortHand();
-            }
+            Console.WriteLine("Turn " + turn);
+        }
+
+        public void printLastSequence()
+        {
+            Console.WriteLine(lastSequence);
         }
 
         public void printPlayerHands()

@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Thirteen_Game
 {
-    public class Player
+    abstract public class TPlayer
     {
         public int id { get; set; }
         public List<Card> hand { get; set; }
 
-        public Player(int id)
+        public TPlayer(int id)
         {
             this.id = id;
             this.hand = new List<Card>();
@@ -29,11 +29,6 @@ namespace Thirteen_Game
         public void printHeader()
         {
             Console.Write(header());
-        }
-
-        public virtual string header()
-        {
-            return $"Player {id} ";
         }
 
         public void printHand()
@@ -86,15 +81,110 @@ namespace Thirteen_Game
             }
             Console.WriteLine();
         }
+
+        public abstract string header();
+
+        public abstract List<int> indicesPlayed(int turn, Sequence lastSequence, TPlayer lastSequencePlayer);
+
+        public Sequence play(int turn, Sequence lastSequence, TPlayer lastSequencePlayer)
+        {
+            var indices = indicesPlayed(turn, lastSequence, lastSequencePlayer);
+            printPlayedCards(indices);
+            var returnSequence = sequenceFromHand(indices);
+            removeFromHand(indices);
+            sortHand();
+            return returnSequence;
+        }
     }
 
-    public class Bot : Player
+    public class Player : TPlayer
+    {
+        public Player(int id) : base(id) { }
+
+        public override string header()
+        {
+            return $"Player {id} ";
+        }
+
+        public List<int> playerInput()
+        {
+            while (true)
+            {
+                Console.WriteLine("Enter which cards you want to play");
+                List<int> indices = new List<int> { };
+
+                String input = Console.ReadLine();
+                if (input == "p")
+                {
+                    return indices;
+                }
+
+                String[] words = input.Trim().Split();
+                try
+                {
+                    foreach (var word in words)
+                        indices.Add(ushort.Parse(word));
+
+                    indices = indices.Distinct().ToList();
+                    indices.Sort();
+
+                    return indices;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error: Invalid indices");
+                }
+            }
+        }
+
+        public override List<int> indicesPlayed(int turn, Sequence lastSequence, TPlayer lastSequencePlayer)
+        {
+
+            if (lastSequencePlayer == this)
+                lastSequence = new Sequence();
+
+            while (true)
+            {
+                var indices = playerInput();
+                Sequence seq = sequenceFromHand(indices);
+
+                if (turn == 1 && (indices.Count() == 0 || hand[indices[0]] != new Card(0, 0)))
+                {
+                    Console.WriteLine("Error: Starting play must include 3S");
+                    continue;
+                }
+
+                if (seq.isValidSequence() && seq > lastSequence)
+                {
+                    return indices;
+                }
+
+                Console.WriteLine("Error: Invalid Sequence");
+            }
+        }
+    }
+
+    public class Bot : TPlayer
     {
         public Bot(int id) : base(id) { }
 
         public override string header()
         {
             return $"Bot {id} ";
+        }
+
+        public override List<int> indicesPlayed(int turn, Sequence lastSequence, TPlayer lastSequencePlayer)
+        {
+            List<int> indices;
+            if (turn == 1)
+                indices = biggestSequenceWithThreeSpades();
+            else
+                indices = betterSequence(lastSequence);
+
+            if (indices.Count() == 0 && this == lastSequencePlayer)
+                indices = biggestSequence(lastSequence);
+
+            return indices;
         }
 
         public List<int> betterFlat(Sequence lastSequence)
@@ -317,7 +407,6 @@ namespace Thirteen_Game
             }
         }
 
-        
         public List<int> biggestSequence(Sequence lastSeq)
         {
             var flat = biggestFlat();
