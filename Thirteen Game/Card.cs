@@ -121,7 +121,20 @@ namespace Thirteen_Game
 
         public override string ToString()
         {
-            return numberName() + " of " + suitName();
+            return $"{shortNumberName()}{shortSuit()}";
+            //return numberName() + " of " + suitName();
+        }
+
+        public string shortNumberName()
+        {
+            if (number > 7) 
+                return char.ToString(numberName().ElementAt(0));
+            return numberName();
+        }
+
+        public string shortSuit()
+        {
+            return char.ToString(suitName().ElementAt(0));
         }
     }
 }

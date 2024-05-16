@@ -26,6 +26,27 @@ namespace Thirteen_Game
             hand.Sort();
         }
 
+        public void printHeader()
+        {
+            if (this is Bot)
+            {
+                Console.Write($"Bot {id} ");
+            }
+            else
+            {
+                Console.Write($"Player {id} ");
+            }
+        }
+
+        public void printHand()
+        {
+            foreach (Card card in hand)
+            {
+                Console.Write(card + " ");
+            }
+            Console.WriteLine();
+        }
+
         // Indices do not need to be sorted
         public Sequence sequenceFromHand(List<int> indices)
         {
@@ -50,11 +71,21 @@ namespace Thirteen_Game
             foreach (int index in descIndices)
                 hand.RemoveAt(index);
         }
+
+        public void printPlayedCards(List<int> indices)
+        {
+            printHeader();
+            Console.Write("played ");
+            foreach (var i in indices)
+            {
+                Console.Write(hand[i] + " ");
+            }
+            Console.WriteLine();
+        }
     }
 
     public class Bot : Player
     {
-
         public Bot(int id) : base(id) { }
 
         public List<int> betterFlat(Sequence lastSequence)
@@ -112,7 +143,7 @@ namespace Thirteen_Game
         {
             if (cardsFound.Count() == lastSequence.size)
             {
-                for (index--; index != -1; index--)
+                for (; index != -1; index--)
                 {
                     if (hand[index].number != lastNum)
                     {
@@ -219,6 +250,77 @@ namespace Thirteen_Game
                     return evenBiggerSeries;
                 }
                 return cardsFound;
+            }
+        }
+
+        // Precondition: This bot has the 3 of spades
+        public List<int> biggestFlatWithThreeSpades()
+        {
+            List<int> indices = new List<int>();
+            for (int i = 0; i < 4 && hand[i].number == 0;  ++i)
+            {
+                indices.Add(i);
+            }
+            return indices;
+        }
+
+        // Precondition: This bot has the 3 of spades
+        public List<int> biggestSeriesWithThreeSpades()
+        {
+            List<int> indices = new List<int>() { 0 };
+            int lastNum = 0;
+            for (int i = 1; i < hand.Count(); ++i)
+            {
+                if (hand[i].number == lastNum)
+                    continue;
+                else if (hand[i].number == lastNum + 1) {
+                    lastNum++;
+                    indices.Add(i);
+                } else
+                    break;
+            }
+            return indices;
+        }
+
+        public List<int> biggestSequenceWithThreeSpades()
+        {
+            List<int> series = biggestSeriesWithThreeSpades();
+            List<int> flat = biggestFlatWithThreeSpades();
+            if (series.Count() == 1 && flat.Count() == 1)
+            {
+                return series;
+            }
+            if (series.Count() == 2)
+            {
+                return flat;
+            }
+            return series.Count() > flat.Count() ? series : flat;
+        }
+
+        public List<int> betterSingle(Sequence lastSeq)
+        {
+            for (int i = 0; i < hand.Count(); ++i)
+            {
+                if (hand[i] > lastSeq.lastCard)
+                {
+                    return new List<int> { i };
+                }
+            }
+            return new List<int> { };
+        }
+
+        public List<int> betterSequence(Sequence lastSeq)
+        {
+            switch (lastSeq.type)
+            {
+                case sequenceType.Single:
+                    return betterSingle(lastSeq);
+                case sequenceType.Flat:
+                    return betterFlat(lastSeq);
+                case sequenceType.Series:
+                    return betterSeries(lastSeq);
+                default:
+                     return new List<int> ();
             }
         }
     }
