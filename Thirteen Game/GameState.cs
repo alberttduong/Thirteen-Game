@@ -25,10 +25,8 @@ namespace Thirteen_Game
         public GameState() {
             players[0] = new Player(0);
             for (int i = 1; i < NUM_BOTS + 1; i++)
-            {
                 players[i] = new Bot(i);
-            }
-
+            
             Deck deck = new Deck();
             deck.shuffle();
 
@@ -71,29 +69,26 @@ namespace Thirteen_Game
             Bot player = (Bot)activePlayer;
             List<int> indices;
             if (turn == 1)
-            {
                 indices = player.biggestSequenceWithThreeSpades();
-            } 
             else
-            {
                 indices = player.betterSequence(lastSequence);
-            }
+           
+            if (indices.Count() == 0 && player == lastSequencePlayer)
+                indices = player.biggestSequence(lastSequence);
 
-            if (indices.Count == 0)
-            {
-                player.printHeader();
-                Console.WriteLine("passed");
-            } else
-            {
-                player.printPlayedCards(indices);
-                playIndices(indices);
-            }
+            player.printPlayedCards(indices);
+            playIndices(indices);
         }
         
         public void playerPlay()
         {
             activePlayer.printHeader();
             Console.WriteLine("passed");
+        }
+
+        public void printLastSequence()
+        {
+            Console.WriteLine(lastSequence);
         }
 
         public void endTurn()
@@ -104,9 +99,13 @@ namespace Thirteen_Game
 
         public void playIndices(List<int> indices)
         {
-            lastSequence = activePlayer.sequenceFromHand(indices);
-            activePlayer.removeFromHand(indices);
-            activePlayer.sortHand();
+            if (indices.Count > 0)
+            {
+                lastSequence = activePlayer.sequenceFromHand(indices);
+                lastSequencePlayer = activePlayer;
+                activePlayer.removeFromHand(indices);
+                activePlayer.sortHand();
+            }
         }
 
         public void printPlayerHands()

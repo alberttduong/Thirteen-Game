@@ -55,6 +55,8 @@ namespace UnitTest_Thirteen
 
             Assert.IsFalse(card > new Card(10, 1));
             Assert.IsFalse(card > new Card(3, 3));
+
+            Assert.IsFalse(card > new Card(3, 2));
         }
     }
 
@@ -373,19 +375,37 @@ namespace UnitTest_Thirteen
                 new Card(0, 1), // 0
                 new Card(2, 0),
                 new Card(2, 1),
+                new Card(2, 2), // 3
+                new Card(2, 3),
+            };
+
+            var actual = bot.betterFlat(new Sequence(sequenceType.Flat, 2, new Card(2, 1)));
+            var expected = new List<int> { 3, 2 };
+
+            Assert.IsTrue(actual.SequenceEqual(expected));
+        }
+
+        [TestMethod]
+        public void Test_BetterFlatReturnsEmpty()
+        {
+            var bot = new Bot(1);
+            bot.hand = new List<Card> {
+                new Card(0, 1), // 0
+                new Card(2, 0),
+                new Card(2, 1),
                 new Card(2, 2),
                 new Card(3, 0),
                 new Card(4, 2),
                 new Card(5, 0),
                 new Card(5, 2),
                 new Card(6, 0),
-                new Card(6, 2), // 9 
+                new Card(7, 2), // 9 
             };
 
-            var actual5 = bot.betterFlat(new Sequence(sequenceType.Flat, 2, new Card(2, 0)));
-            var expected5 = new List<int> { 2, 1 };
+            var actual = bot.betterFlat(new Sequence(sequenceType.Flat, 2, new Card(8, 2)));
+            var expected = new List<int> { };
 
-            Assert.IsTrue(actual5.SequenceEqual(expected5));
+            Assert.IsTrue(actual.SequenceEqual(expected));
         }
 
         [TestMethod]
@@ -457,6 +477,61 @@ namespace UnitTest_Thirteen
 
             Assert.IsTrue(actual.SequenceEqual(expected));
         }
+
+        [TestMethod]
+        public void Test_BetterSeriesWhenHighestIsLowerBySuit()
+        {
+            var bot = new Bot(1);
+            bot.hand = new List<Card> {
+                new Card(0, 1),
+                new Card(2, 0),
+                new Card(3, 1),
+            };
+            var actual = bot.betterSeries(new Sequence(sequenceType.Series, 3, new Card(3, 2)));
+            Assert.IsTrue(actual.Count == 0);
+        }
+
+        [TestMethod]
+        public void Test_BetterSingle()
+        {
+            var bot = new Bot(1);
+            bot.hand = new List<Card> {
+                new Card(0, 1),
+                new Card(2, 0),
+                new Card(3, 2)
+            };
+            var actual = bot.betterSingle(new Sequence(sequenceType.Single, 1, new Card(2, 0)));
+            var expected = new List<int> { 2 };
+            var actual2 = bot.betterSingle(new Sequence(sequenceType.Single, 1, new Card(3, 2)));
+            var expected2 = new List<int> { };
+            Assert.IsTrue(actual.SequenceEqual(expected));
+            Assert.IsTrue(actual2.SequenceEqual(expected2));
+        }
+
+        [TestMethod]
+        public void Test_BiggestSeriesWithOnly1CardReturnsThatCard()
+        {
+            var bot = new Bot(1);
+            bot.hand = new List<Card> {
+                new Card(0, 1),
+            };
+            var actual = bot.biggestSeries();
+            var expected = new List<int> { 0 };
+            Assert.IsTrue(actual.SequenceEqual(expected));
+        }
+
+        [TestMethod]
+        public void Test_BiggestFlatWithOnly1CardReturnsThatCard()
+        {
+            var bot = new Bot(1);
+            bot.hand = new List<Card> {
+                new Card(0, 1),
+            };
+            var actual = bot.biggestFlat();
+            var expected = new List<int> { 0 };
+            Assert.IsTrue(actual.SequenceEqual(expected));
+        }
+
 
         void printIndx(List<int> l)
         {

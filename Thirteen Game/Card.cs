@@ -119,6 +119,12 @@ namespace Thirteen_Game
             return suitName(this.suit);
         }
 
+        public string debugString()
+        {
+            return $"{this.number} {this.suit}";
+        }
+
+
         public override string ToString()
         {
             return $"{shortNumberName()}{shortSuit()}";

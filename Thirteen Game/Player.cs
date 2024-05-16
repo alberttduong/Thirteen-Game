@@ -28,14 +28,12 @@ namespace Thirteen_Game
 
         public void printHeader()
         {
-            if (this is Bot)
-            {
-                Console.Write($"Bot {id} ");
-            }
-            else
-            {
-                Console.Write($"Player {id} ");
-            }
+            Console.Write(header());
+        }
+
+        public virtual string header()
+        {
+            return $"Player {id} ";
         }
 
         public void printHand()
@@ -75,6 +73,12 @@ namespace Thirteen_Game
         public void printPlayedCards(List<int> indices)
         {
             printHeader();
+            if (indices.Count == 0)
+            {
+                Console.WriteLine("passed");
+                return;
+            }
+
             Console.Write("played ");
             foreach (var i in indices)
             {
@@ -88,12 +92,16 @@ namespace Thirteen_Game
     {
         public Bot(int id) : base(id) { }
 
+        public override string header()
+        {
+            return $"Bot {id} ";
+        }
+
         public List<int> betterFlat(Sequence lastSequence)
         {
             return betterFlat(lastSequence, new List<int> { }, hand.Count() - 1);
         }
 
-        // Params: reverse hand as stack
         // Returns list of indices, none if has to pass
         private List<int> betterFlat(Sequence lastSequence, List<int> cardsFound, int index, int? lastNum = null)
         {
@@ -101,28 +109,25 @@ namespace Thirteen_Game
             {
                 var evenBetterFlat = betterFlat(lastSequence, new List<int> { }, lastSequence.size + index - 1);
                 if (evenBetterFlat.Count() == 0)
-                {
                     return cardsFound;
-                } else
-                {
+                else
                     return evenBetterFlat;
-                }
             }
+
             if (index == -1)
-            {
                 return new List<int> { };
-            }
 
             Card thisCard = hand[index];
 
-            if (lastNum == null) {
-                if (thisCard < lastSequence.lastCard) {
-                    return new List<int> { };
-                } else
-                {
+            if (lastNum == null)
+            {
+                if (thisCard > lastSequence.lastCard)
                     lastNum = thisCard.number;
-                }
-            } else if (thisCard.number != lastNum) {
+                else
+                    return new List<int> { };
+            } 
+            else if (thisCard.number != lastNum) 
+            {
                 lastNum = thisCard.number;
                 cardsFound.Clear();
             }
@@ -146,38 +151,33 @@ namespace Thirteen_Game
                 for (; index != -1; index--)
                 {
                     if (hand[index].number != lastNum)
-                    {
                         break;
-                    }
+
                     cardsFound.RemoveAt(cardsFound.Count() - 1);
                     cardsFound.Add(index);
                 }
+
                 var evenBetterSeries = betterSeries(lastSequence, new List<int> { }, cardsFound[1]);
                 if (evenBetterSeries.Count() != 0)
-                {
                     return evenBetterSeries;
-                }
+
                 return cardsFound;
             }
 
             if (index == -1)
-            {
                 return new List<int> { };
-            }
 
             Card thisCard = hand[index];
 
             if (lastNum == null)
             {
-                if (thisCard < lastSequence.lastCard)
-                {
-                    return new List<int> { };
-                }
-                else
+                if (thisCard > lastSequence.lastCard)
                 {
                     lastNum = thisCard.number;
                     cardsFound.Add(index);
                 }
+                else
+                    return new List<int> { };
             }
             else if (thisCard.number == lastNum)
             {
@@ -206,24 +206,21 @@ namespace Thirteen_Game
         private List<int> biggestFlat(int? lastNum, List<int> cardsFound, int index = 0)
         {
             if (index == hand.Count())
-            {
                 return cardsFound;
-            }
+
             var thisCard = hand[index];
             if (lastNum == null || thisCard.number == lastNum)
             {
                 cardsFound.Add(index);
                 return biggestFlat(thisCard.number, cardsFound, index + 1);
-            } else
-            {
-                var evenBiggerFlat = biggestFlat(null, new List<int> { }, index);
-                if (evenBiggerFlat.Count() > cardsFound.Count())
-                {
-                    return evenBiggerFlat;
-                }
-                return cardsFound;
             }
+
+            var evenBiggerFlat = biggestFlat(null, new List<int> { }, index);
+            if (evenBiggerFlat.Count() > cardsFound.Count())
+                return evenBiggerFlat;
+            return cardsFound;
         }
+
         public List<int> biggestSeries()
         {
             return biggestSeries(null, new List<int> { });
@@ -232,35 +229,34 @@ namespace Thirteen_Game
         private List<int> biggestSeries(int? lastNum, List<int> cardsFound, int index = 0)
         {
             if (index == hand.Count())
-            {
                 return cardsFound;
-            }
+
             var thisCard = hand[index];
+
             if (lastNum == null || thisCard.number == lastNum + 1)
             {
                 cardsFound.Add(index);
                 return biggestSeries(thisCard.number, cardsFound, index + 1);
-            } else if (thisCard.number == lastNum)
-            {
-                return biggestSeries(lastNum, cardsFound, index + 1);
-            } else { 
-                var evenBiggerSeries = biggestSeries(null, new List<int> { }, index);
-                if (evenBiggerSeries.Count() > cardsFound.Count())
-                {
-                    return evenBiggerSeries;
-                }
-                return cardsFound;
             }
+
+            if (thisCard.number == lastNum)
+                return biggestSeries(lastNum, cardsFound, index + 1);
+            
+            var evenBiggerSeries = biggestSeries(null, new List<int> { }, index);
+            if (evenBiggerSeries.Count() > cardsFound.Count())
+                return evenBiggerSeries;
+
+            return cardsFound;
         }
 
         // Precondition: This bot has the 3 of spades
         public List<int> biggestFlatWithThreeSpades()
         {
             List<int> indices = new List<int>();
+
             for (int i = 0; i < 4 && hand[i].number == 0;  ++i)
-            {
                 indices.Add(i);
-            }
+
             return indices;
         }
 
@@ -287,13 +283,9 @@ namespace Thirteen_Game
             List<int> series = biggestSeriesWithThreeSpades();
             List<int> flat = biggestFlatWithThreeSpades();
             if (series.Count() == 1 && flat.Count() == 1)
-            {
                 return series;
-            }
             if (series.Count() == 2)
-            {
                 return flat;
-            }
             return series.Count() > flat.Count() ? series : flat;
         }
 
@@ -302,9 +294,7 @@ namespace Thirteen_Game
             for (int i = 0; i < hand.Count(); ++i)
             {
                 if (hand[i] > lastSeq.lastCard)
-                {
                     return new List<int> { i };
-                }
             }
             return new List<int> { };
         }
@@ -319,9 +309,24 @@ namespace Thirteen_Game
                     return betterFlat(lastSeq);
                 case sequenceType.Series:
                     return betterSeries(lastSeq);
+                case sequenceType.Null:
+                    return biggestSequence(lastSeq);
                 default:
-                     return new List<int> ();
+                    // Should throw an error
+                    return new List<int> ();
             }
+        }
+
+        
+        public List<int> biggestSequence(Sequence lastSeq)
+        {
+            var flat = biggestFlat();
+            var series = biggestSeries();
+
+            if (series.Count() == 2)
+                return flat;
+
+            return series.Count() >= flat.Count() ? series : flat;
         }
     }
 }
