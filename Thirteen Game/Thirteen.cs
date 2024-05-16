@@ -17,13 +17,12 @@ namespace Thirteen_Game
                 game.printTurn();
                 game.printPlayerHands();
                 game.printLastSequence();
+
                 if (game.activePlayer is Bot)
-                {
                     game.botPlay();
-                } else
-                {
+                else
                     game.playerPlay();
-                }
+
                 game.endTurn();
                 Console.ReadLine();
             }

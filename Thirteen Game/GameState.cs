@@ -41,21 +41,37 @@ namespace Thirteen_Game
                     activePlayerNum = i;
                 }
             }
-            activePlayer.printHeader();
-            Console.WriteLine(" has 3S and will go first.");
+            Console.WriteLine($"{activePlayer.header()} has 3S and will go first.");
         }
 
-        public void playerTurn(List<int> indices)
+        public List<int> playerInput()
         {
-            Sequence seq = activePlayer.sequenceFromHand(indices);
+            while (true)
+            {
+                Console.WriteLine("Enter which cards you want to play");
+                List<int> indices = new List<int> { };
 
-            if (lastSequencePlayer == activePlayer)
-                lastSequence = new Sequence();
+                String input = Console.ReadLine();
+                if (input == "p")
+                {
+                    return indices;
+                }
 
-            if (seq.isValidSequence() && seq > lastSequence) {
-                activePlayer.removeFromHand(indices);
-                lastSequencePlayer = activePlayer;
-                lastSequence = seq;
+                String[] words = input.Trim().Split();
+                try
+                {
+                    foreach (var word in words) 
+                        indices.Add(ushort.Parse(word));
+
+                    indices = indices.Distinct().ToList();
+                    indices.Sort();
+
+                    return indices;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error: Invalid indices");
+                }
             }
         }
 
@@ -82,8 +98,28 @@ namespace Thirteen_Game
         
         public void playerPlay()
         {
-            activePlayer.printHeader();
-            Console.WriteLine("passed");
+            if (lastSequencePlayer == activePlayer)
+                lastSequence = new Sequence();
+
+            while (true) {
+                var indices = playerInput();
+                Sequence seq = activePlayer.sequenceFromHand(indices);
+
+                if (turn == 1 && (indices.Count() == 0 || activePlayer.hand[indices[0]] != new Card(0, 0)))
+                {
+                    Console.WriteLine("Error: Starting play must include 3S");
+                    continue;
+                }
+
+                if (seq.isValidSequence() && seq > lastSequence)
+                {
+                    activePlayer.printPlayedCards(indices);
+                    playIndices(indices);
+                    break;
+                }
+
+                Console.WriteLine("Error: Invalid Sequence");
+            }
         }
 
         public void printLastSequence()
