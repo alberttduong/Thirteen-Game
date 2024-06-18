@@ -13,7 +13,7 @@ namespace Thirteen_Game
         const int NUM_BOTS = 3;
 
         TPlayer[] players = new TPlayer[NUM_PLAYERS];
-        TPlayer activePlayer;
+        public TPlayer activePlayer;
 
         TPlayer lastSequencePlayer;
         Sequence lastSequence = new Sequence();
@@ -41,7 +41,8 @@ namespace Thirteen_Game
                     activePlayerNum = i;
                 }
             }
-            Console.WriteLine($"{activePlayer.header()} has 3S and will go first.");
+            Console.WriteLine($"{activePlayer.header()}has 3S and will go first.");
+            Console.WriteLine();
         }
 
         public void play()
@@ -56,6 +57,9 @@ namespace Thirteen_Game
 
         public void endTurn()
         {
+            if (activePlayer.hand.Count() == 0)
+                won = true;
+
             activePlayer = players[++activePlayerNum % NUM_PLAYERS];
             turn++;
         }

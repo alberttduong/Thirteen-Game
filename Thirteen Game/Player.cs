@@ -31,14 +31,7 @@ namespace Thirteen_Game
             Console.Write(header());
         }
 
-        public void printHand()
-        {
-            foreach (Card card in hand)
-            {
-                Console.Write(card + " ");
-            }
-            Console.WriteLine();
-        }
+        public abstract void printHand();
 
         // Indices do not need to be sorted
         public Sequence sequenceFromHand(List<int> indices)
@@ -73,7 +66,6 @@ namespace Thirteen_Game
                 Console.WriteLine("passed");
                 return;
             }
-
             Console.Write("played ");
             foreach (var i in indices)
             {
@@ -89,6 +81,12 @@ namespace Thirteen_Game
         public Sequence play(int turn, Sequence lastSequence, TPlayer lastSequencePlayer)
         {
             var indices = indicesPlayed(turn, lastSequence, lastSequencePlayer);
+            if (indices == null)
+            {
+                printHeader();
+                Console.WriteLine("passed");
+                return new Sequence();
+            }
             printPlayedCards(indices);
             var returnSequence = sequenceFromHand(indices);
             removeFromHand(indices);
@@ -105,6 +103,14 @@ namespace Thirteen_Game
         {
             return $"Player {id} ";
         }
+        public override void printHand()
+        {
+            foreach (Card card in hand)
+            {
+                Console.Write(card + " ");
+            }
+            Console.WriteLine();
+        }
 
         public List<int> playerInput()
         {
@@ -116,7 +122,8 @@ namespace Thirteen_Game
                 String input = Console.ReadLine();
                 if (input == "p")
                 {
-                    return indices;
+                    // pass
+                    return null;
                 }
 
                 String[] words = input.Trim().Split();
@@ -146,6 +153,18 @@ namespace Thirteen_Game
             while (true)
             {
                 var indices = playerInput();
+
+                //pass
+                if (indices == null)
+                {
+                    if (turn == 1)
+                    {
+                        Console.WriteLine("Error: Can't pass on the first turn");
+                        continue;
+                    }
+                    return null;
+                }
+
                 Sequence seq = sequenceFromHand(indices);
 
                 if (turn == 1 && (indices.Count() == 0 || hand[indices[0]] != new Card(0, 0)))
@@ -171,6 +190,11 @@ namespace Thirteen_Game
         public override string header()
         {
             return $"Bot {id} ";
+        }
+
+        public override void printHand()
+        {
+            Console.WriteLine($"# cards: {hand.Count()}");
         }
 
         public override List<int> indicesPlayed(int turn, Sequence lastSequence, TPlayer lastSequencePlayer)
