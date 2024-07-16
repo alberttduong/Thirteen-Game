@@ -17,4 +17,4 @@ A singleplayer, very basic recreation of the playing card game, Thirteen, create
     - automatic win if a player has four 2's or a sequence of 3 to Ace
     - bombs (4 of kinds and double sequences)
 
-![13 example gameplay](thirteen example.gif)
+![13 example gameplay](https://github.com/alberttduong/Thirteen-Game/blob/main/thirteen%20example.gif)
